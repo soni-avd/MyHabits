@@ -13,6 +13,10 @@
 		E31B0C6F25D2EAFD00CFCD9E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E31B0C6D25D2EAFD00CFCD9E /* Main.storyboard */; };
 		E31B0C7125D2EAFF00CFCD9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E31B0C7025D2EAFF00CFCD9E /* Assets.xcassets */; };
 		E31B0C7425D2EAFF00CFCD9E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E31B0C7225D2EAFF00CFCD9E /* LaunchScreen.storyboard */; };
+		E31B0C7E25D2F02800CFCD9E /* HabitsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31B0C7D25D2F02800CFCD9E /* HabitsStore.swift */; };
+		E31B0C8425D2F25500CFCD9E /* HabitsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31B0C8325D2F25500CFCD9E /* HabitsViewController.swift */; };
+		E31B0C8725D2F26000CFCD9E /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31B0C8625D2F26000CFCD9E /* InfoViewController.swift */; };
+		E31B0C9425D4325400CFCD9E /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E31B0C9325D4325400CFCD9E /* HabitViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,10 @@
 		E31B0C7025D2EAFF00CFCD9E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E31B0C7325D2EAFF00CFCD9E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E31B0C7525D2EAFF00CFCD9E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E31B0C7D25D2F02800CFCD9E /* HabitsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsStore.swift; sourceTree = "<group>"; };
+		E31B0C8325D2F25500CFCD9E /* HabitsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitsViewController.swift; sourceTree = "<group>"; };
+		E31B0C8625D2F26000CFCD9E /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		E31B0C9325D4325400CFCD9E /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +71,10 @@
 				E31B0C7025D2EAFF00CFCD9E /* Assets.xcassets */,
 				E31B0C7225D2EAFF00CFCD9E /* LaunchScreen.storyboard */,
 				E31B0C7525D2EAFF00CFCD9E /* Info.plist */,
+				E31B0C7D25D2F02800CFCD9E /* HabitsStore.swift */,
+				E31B0C8325D2F25500CFCD9E /* HabitsViewController.swift */,
+				E31B0C8625D2F26000CFCD9E /* InfoViewController.swift */,
+				E31B0C9325D4325400CFCD9E /* HabitViewController.swift */,
 			);
 			path = MyHabits;
 			sourceTree = "<group>";
@@ -138,7 +150,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E31B0C6C25D2EAFD00CFCD9E /* ViewController.swift in Sources */,
+				E31B0C7E25D2F02800CFCD9E /* HabitsStore.swift in Sources */,
+				E31B0C9425D4325400CFCD9E /* HabitViewController.swift in Sources */,
 				E31B0C6825D2EAFD00CFCD9E /* AppDelegate.swift in Sources */,
+				E31B0C8425D2F25500CFCD9E /* HabitsViewController.swift in Sources */,
+				E31B0C8725D2F26000CFCD9E /* InfoViewController.swift in Sources */,
 				E31B0C6A25D2EAFD00CFCD9E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,6 +304,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MyHabits/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,6 +323,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MyHabits/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
