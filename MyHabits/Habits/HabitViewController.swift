@@ -96,7 +96,7 @@ class HabitViewController: UIViewController {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.locale = Locale(identifier: "en_US")
+        formatter.locale = Locale(identifier: "ru_RU")
         txtDatePicker.text = formatter.string(from: datePicker.date)
         self.view.endEditing(true)
     }
@@ -175,14 +175,16 @@ class HabitViewController: UIViewController {
         let cancelItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(cancelBarButton))
         navItem.leftBarButtonItem = cancelItem
         navBar.setItems([navItem], animated: false)
+
     }
     @objc func saveBarButton() {
         print(#function)
-        let newHabit = Habit(name:textInput.text!,
-                             date:datePicker.date,
-                             color: colorLabel.backgroundColor!)
+        let newHabit = Habit(name: textInput.text!,
+                             date: datePicker.date,
+                             color: colorButton.backgroundColor!)
         let store = HabitsStore.shared
         store.habits.append(newHabit)
+        reloadInputViews()
         self.dismiss(animated: true, completion: nil)
     }
     
