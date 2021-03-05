@@ -12,9 +12,11 @@ class HabitsViewController: UIViewController {
     private let layout = UICollectionViewFlowLayout()
     private lazy var habitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     
+    private var habitViewController: HabitViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Привычки"
+        self.navigationItem.title = "Сегодня"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewHabit))
         
         view.addSubview(habitsCollectionView)
@@ -34,23 +36,37 @@ class HabitsViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
     
+
     @objc func addNewHabit() {
         print(#function)
-        self.present(HabitViewController(), animated: true, completion: nil)
+        
+        habitViewController = HabitViewController()
+        
+        habitViewController?.onHabitAdded = { [weak self] in
+            self?.habitsCollectionView.reloadData()
+        }
+        
+        guard let viewController = habitViewController else { return }
+        
+        self.present(viewController, animated: true, completion: nil)
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        navigationController?.navigationBar.prefersLargeTitles = true
+
+    }
     
 }
 
 extension HabitsViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.item == 0 {
-        let width: CGFloat = collectionView.bounds.width - 32
-        return CGSize(width: width, height: 60)
+        if indexPath.section == 0 {
+            let width: CGFloat = collectionView.bounds.width - 32
+            return CGSize(width: width, height: 60)
         } else {
             let width: CGFloat = collectionView.bounds.width - 32
-          return CGSize(width: width, height: 130)
+            return CGSize(width: width, height: 130)
         }
     }
     
@@ -63,27 +79,31 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
             return UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         }
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let habitViewController = HabitDetailsViewController()
+        navigationController?.pushViewController(habitViewController, animated: true)
+    }
     
 }
 
 extension HabitsViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard section != 0 else { return 1 }
         return HabitsStore.shared.habits.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.item == 0 {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ProgressCollectionViewCell.self), for: indexPath) as! ProgressCollectionViewCell
-        return cell
-        } else {
+        switch indexPath.section {
+        case 0:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ProgressCollectionViewCell.self), for: indexPath) as! ProgressCollectionViewCell
+            return cell
+        default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: HabitCollectionViewCell.self), for: indexPath) as! HabitCollectionViewCell
-            if indexPath.item == HabitsStore.shared.habits.count {
-//                for habit1 in HabitsStore.shared.habits {
-                    cell.habit?.name = HabitsStore.shared.habits[indexPath.row].name
-//                }
-            }
+            cell.habit = HabitsStore.shared.habits[indexPath.item]
             return cell
         }
-}
-
+    }
 }

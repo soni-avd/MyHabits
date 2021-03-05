@@ -1,16 +1,14 @@
 //
-//  HabitViewController.swift
+//  CorrectHabitViewController.swift
 //  MyHabits
 //
-//  Created by Сони Авдеева on 10/02/2021.
+//  Created by Сони Авдеева on 04/03/2021.
 //
 
 import UIKit
 
-class HabitViewController: UIViewController {
-    
-    var onHabitAdded: (() -> Void)?
-    
+class CorrectHabitViewController: UIViewController {
+
     let scrollView = UIScrollView()
     
     let nameLabel: UILabel = {
@@ -26,7 +24,9 @@ class HabitViewController: UIViewController {
     let textInput: UITextField = {
         let input = UITextField()
         input.translatesAutoresizingMaskIntoConstraints = false
-        input.placeholder = "Бегать по утрам, спать 8 часов и т.п."
+        for habitName in HabitsStore.shared.habits {
+            input.text = habitName.name
+        }
         input.textColor = .black
         input.layer.borderWidth = 0
         input.font = .systemFont(ofSize: 13)
@@ -45,7 +45,9 @@ class HabitViewController: UIViewController {
     let colorButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.backgroundColor = #colorLiteral(red: 1, green: 0.6235294342, blue: 0.3098039329, alpha: 1)
+        for habitColor in HabitsStore.shared.habits {
+            button.backgroundColor = habitColor.color
+        }
         button.layer.cornerRadius = 15
         button.addTarget(self, action: #selector(colorButtonPressed), for: .touchUpInside)
         button.layer.masksToBounds = true
@@ -160,81 +162,51 @@ class HabitViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(constraints)
     }
+   
+    
+    @objc func colorButtonPressed() {
+    print(#function)
+    let picker = UIColorPickerViewController()
+    self.present(picker, animated: true, completion: nil)
+    picker.selectedColor = colorButton.backgroundColor!
+    picker.delegate = self
+}
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .white
-        setupViews()
-        showDatePicker()
-        
+        scrollView.backgroundColor = .white
         let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 44))
         scrollView.addSubview(navBar)
-        let navItem = UINavigationItem(title: "Создать")
+        let navItem = UINavigationItem(title: "Править")
         let saveItem = UIBarButtonItem(title: "Сохранить", style: .plain, target: self, action: #selector(saveBarButton))
         navItem.rightBarButtonItem = saveItem
         let cancelItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(cancelBarButton))
         navItem.leftBarButtonItem = cancelItem
         navBar.setItems([navItem], animated: false)
+        
+        setupViews()
+        showDatePicker()
+
 
     }
-    
+
     @objc func saveBarButton() {
-        print(#function)
-        let newHabit = Habit(name: textInput.text!,
-                             date: datePicker.date,
-                             color: colorButton.backgroundColor!)
-        let store = HabitsStore.shared
-        store.habits.append(newHabit)
-        reloadInputViews()
-        
-        dismiss(animated: true) { [weak self] in
-            self?.onHabitAdded?()
-        }
+    print(#function)
+    reloadInputViews()
+        HabitsStore.shared.save()
+        self.dismiss(animated: true, completion: nil)    
     }
-    
+
     @objc func cancelBarButton() {
-        print(#function)
-        self.dismiss(animated: true, completion: nil)
+    print(#function)
+    self.dismiss(animated: true, completion: nil)
 
     }
-        @objc func colorButtonPressed() {
-        print(#function)
-        let picker = UIColorPickerViewController()
-        self.present(picker, animated: true, completion: nil)
-        picker.selectedColor = colorButton.backgroundColor!
-        picker.delegate = self
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-        @objc fileprivate func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            scrollView.contentInset.bottom = keyboardSize.height
-            scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
-        }
-    }
-    
-    @objc fileprivate func keyboardWillHide(notification: NSNotification) {
-        scrollView.contentInset.bottom = .zero
-        scrollView.verticalScrollIndicatorInsets = .zero
-    }
-    
-    
 }
-extension HabitViewController: UIColorPickerViewControllerDelegate {
+
+extension CorrectHabitViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         colorButton.backgroundColor = viewController.selectedColor
     }

@@ -9,10 +9,15 @@ import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
     
-  var habit: Habit? {
+    var habit: Habit? {
         didSet {
             habitLabel.text = habit?.name
             timeLabel.text = habit?.dateString
+            tickButton.layer.borderColor = habit?.color.cgColor
+            //            tickButton.backgroundColor = habit?.color
+            habitLabel.textColor = habit?.color
+            
+            
         }
     }
     private var habitLabel: UILabel = {
@@ -22,11 +27,8 @@ class HabitCollectionViewCell: UICollectionViewCell {
         for habit1 in HabitsStore.shared.habits {
             habit.text = "\(habit1.name)"
             habit.textColor = habit1.color
-            
         }
         habit.font = .boldSystemFont(ofSize: 15)
-        
-        
         return habit
     }()
     private var timeLabel: UILabel = {
@@ -56,9 +58,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         var button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = .white
-//        for habit in HabitsStore.shared.habits {
-        button.layer.borderColor = UIColor.blue.cgColor
-//        }
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 18
         button.layer.masksToBounds = true
@@ -69,10 +68,10 @@ class HabitCollectionViewCell: UICollectionViewCell {
         print(#function)
         for habit in HabitsStore.shared.habits {
             tickButton.backgroundColor = habit.color
-            tickButton.setBackgroundImage(#imageLiteral(resourceName: "tick"), for: .normal)
+            tickButton.setImage(.checkmark, for: .normal)
             if habit.isAlreadyTakenToday == false {
-            HabitsStore.shared.track(habit)
-        }
+                HabitsStore.shared.track(habit)
+            }
         }
     }
     
@@ -90,11 +89,11 @@ class HabitCollectionViewCell: UICollectionViewCell {
             
             habitLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             habitLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            habitLabel.bottomAnchor.constraint(equalTo: timeLabel.topAnchor, constant: 4),
+            habitLabel.bottomAnchor.constraint(equalTo: timeLabel.topAnchor, constant: -4),
             habitLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.5),
             
             timeLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            timeLabel.widthAnchor.constraint(equalTo: habitLabel.widthAnchor),
+            timeLabel.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 3/4),
             timeLabel.heightAnchor.constraint(equalToConstant: 20),
             
             daysLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
@@ -106,7 +105,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
             tickButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -47),
             tickButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -26),
             tickButton.widthAnchor.constraint(equalToConstant: 36)
-
+            
         ]
         NSLayoutConstraint.activate(constraints)
     }

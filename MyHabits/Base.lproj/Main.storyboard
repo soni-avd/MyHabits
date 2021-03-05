@@ -75,11 +75,11 @@
             </objects>
             <point key="canvasLocation" x="764" y="374"/>
         </scene>
-        <!--Item-->
+        <!--Привычки-->
         <scene sceneID="2He-C1-9CY">
             <objects>
                 <navigationController id="epv-Td-sms" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" image="habit2" id="CD8-K3-Vp6"/>
+                    <tabBarItem key="tabBarItem" title="Привычки" image="habits_tab_icon" id="CD8-K3-Vp6"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="OYZ-Pm-VEL">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -94,7 +94,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="habit2" width="20" height="18"/>
+        <image name="habits_tab_icon" width="25" height="23"/>
         <image name="info.circle.fill" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
