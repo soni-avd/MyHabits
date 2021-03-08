@@ -9,8 +9,9 @@ import UIKit
 
 class ProgressCollectionViewCell: UICollectionViewCell {
     
+    
     private let  indicatorText: UILabel = {
-       var label = UILabel()
+        var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Все получится!"
         label.textColor = .systemGray
@@ -18,16 +19,16 @@ class ProgressCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-   private var indicatorLabel: UILabel = {
-       var label = UILabel()
+    private var indicatorLabel: UILabel = {
+        var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "\(Int(HabitsStore.shared.todayProgress))%"
+        label.text = "\(Float(HabitsStore.shared.todayProgress))%"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 13)
         
         return label
     }()
-     var progressIndicator: UIProgressView = {
+    var progressIndicator: UIProgressView = {
         var progress = UIProgressView(progressViewStyle: .default)
         progress.translatesAutoresizingMaskIntoConstraints = false
         progress.trackTintColor = .systemGray
@@ -49,7 +50,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
             
             indicatorLabel.topAnchor.constraint(equalTo: indicatorText.topAnchor),
             indicatorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            indicatorLabel.widthAnchor.constraint(equalToConstant: 30),
+            indicatorLabel.widthAnchor.constraint(equalToConstant: 40),
             indicatorLabel.heightAnchor.constraint(equalToConstant: 20),
             
             progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),

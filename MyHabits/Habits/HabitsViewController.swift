@@ -9,8 +9,9 @@ import UIKit
 
 class HabitsViewController: UIViewController {
     
+   
     private let layout = UICollectionViewFlowLayout()
-    private lazy var habitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    lazy var habitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     
     private var habitViewController: HabitViewController?
     
@@ -40,7 +41,7 @@ class HabitsViewController: UIViewController {
     @objc func addNewHabit() {
         print(#function)
         
-        habitViewController = HabitViewController()
+//        habitViewController = HabitViewController()
         
         habitViewController?.onHabitAdded = { [weak self] in
             self?.habitsCollectionView.reloadData()
@@ -80,7 +81,8 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
         }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let habitViewController = HabitDetailsViewController()
+        let habit = HabitsStore.shared.habits[indexPath.item]
+        let habitViewController = HabitDetailsViewController(habit: habit)
         navigationController?.pushViewController(habitViewController, animated: true)
     }
     

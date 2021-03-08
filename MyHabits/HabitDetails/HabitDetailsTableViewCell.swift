@@ -11,10 +11,12 @@ class HabitDetailsTableViewCell: UITableViewCell {
     
     var dayDate: Habit? {
         didSet {
-            trackedDay.text = dayDate?.date.description
+            trackedDay.text = HabitsStore.shared.trackDateString(forIndex: 1)
+            
         }
     }
 
+    
     var trackedDay: UILabel = {
         var day = UILabel()
         day.translatesAutoresizingMaskIntoConstraints = false

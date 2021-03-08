@@ -32,7 +32,7 @@ class HabitDetailsHeaderView: UITableViewHeaderFooterView {
         fatalError("init(coder:) has not been implemented")
     }
     func setupViews() {
-        contentView.backgroundColor = .systemGray
+        contentView.backgroundColor = .init(red: 242, green: 242, blue: 247, alpha: 100)
         contentView.addSubview(habitActivityLabel)
         
         let constraints = [

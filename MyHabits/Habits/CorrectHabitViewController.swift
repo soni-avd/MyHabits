@@ -9,8 +9,10 @@ import UIKit
 
 class CorrectHabitViewController: UIViewController {
 
-    let scrollView = UIScrollView()
+    private var habitViewController: HabitViewController?
     
+    let scrollView = UIScrollView()
+    public var habit: Habit
     let nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -24,10 +26,6 @@ class CorrectHabitViewController: UIViewController {
     let textInput: UITextField = {
         let input = UITextField()
         input.translatesAutoresizingMaskIntoConstraints = false
-        for habitName in HabitsStore.shared.habits {
-            input.text = habitName.name
-        }
-        input.textColor = .black
         input.layer.borderWidth = 0
         input.font = .systemFont(ofSize: 13)
         return input
@@ -45,9 +43,6 @@ class CorrectHabitViewController: UIViewController {
     let colorButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        for habitColor in HabitsStore.shared.habits {
-            button.backgroundColor = habitColor.color
-        }
         button.layer.cornerRadius = 15
         button.addTarget(self, action: #selector(colorButtonPressed), for: .touchUpInside)
         button.layer.masksToBounds = true
@@ -78,6 +73,23 @@ class CorrectHabitViewController: UIViewController {
     }()
     let datePicker = UIDatePicker()
     
+    let deleteButton: UIButton = {
+        let delete = UIButton(type: .system)
+        delete.translatesAutoresizingMaskIntoConstraints = false
+        delete.setTitle("Удалить привычку", for: .normal)
+        delete.setTitleColor(.red, for: .normal)
+        return delete
+    }()
+    
+    
+    init(habit: Habit) {
+        self.habit = habit
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     func showDatePicker() {
         datePicker.datePickerMode = .time
         txtDatePicker.inputView = datePicker
@@ -120,6 +132,7 @@ class CorrectHabitViewController: UIViewController {
         scrollView.addSubview(timeLabel)
         scrollView.addSubview(dateText)
         scrollView.addSubview(txtDatePicker)
+        scrollView.addSubview(deleteButton)
         datePicker.translatesAutoresizingMaskIntoConstraints = false
         
         let constraints = [
@@ -158,7 +171,10 @@ class CorrectHabitViewController: UIViewController {
             
             txtDatePicker.heightAnchor.constraint(equalToConstant: 30),
             txtDatePicker.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            txtDatePicker.topAnchor.constraint(equalTo: dateText.topAnchor)
+            txtDatePicker.topAnchor.constraint(equalTo: dateText.topAnchor),
+            
+            deleteButton.bottomAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            deleteButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -188,15 +204,21 @@ class CorrectHabitViewController: UIViewController {
         
         setupViews()
         showDatePicker()
-
+        textInput.text = habit.name
+        textInput.textColor = habit.color
+        colorButton.backgroundColor = habit.color
+        
 
     }
 
     @objc func saveBarButton() {
     print(#function)
-    reloadInputViews()
-        HabitsStore.shared.save()
-        self.dismiss(animated: true, completion: nil)    
+        habitViewController?.onHabitAdded = {
+            
+        }
+
+        self.dismiss(animated: true, completion: nil)
+
     }
 
     @objc func cancelBarButton() {

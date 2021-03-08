@@ -14,10 +14,13 @@ class HabitCollectionViewCell: UICollectionViewCell {
             habitLabel.text = habit?.name
             timeLabel.text = habit?.dateString
             tickButton.layer.borderColor = habit?.color.cgColor
-            //            tickButton.backgroundColor = habit?.color
             habitLabel.textColor = habit?.color
-            
-            
+            if habit?.isAlreadyTakenToday == true {
+                tick()
+                daysLabel.text = "Подряд: \(+1)"
+            } else {
+                daysLabel.text = "Подряд: 0"
+            }
         }
     }
     private var habitLabel: UILabel = {
@@ -45,13 +48,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         var days = UILabel()
         days.translatesAutoresizingMaskIntoConstraints = false
         days.textColor = .systemGray
-        for habit in HabitsStore.shared.habits {
-            if habit.isAlreadyTakenToday {
-                days.text = "Подряд: \(+1)"
-            } else {
-                days.text = "Подряд: 0"
-            }
-        }
         return days
     }()
     private lazy var tickButton: UIButton = {
@@ -66,14 +62,17 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }()
     @objc func tick() {
         print(#function)
-        for habit in HabitsStore.shared.habits {
-            tickButton.backgroundColor = habit.color
+    
+            tickButton.tintColor = habit?.color
+        tickButton.backgroundColor = habit?.color
             tickButton.setImage(.checkmark, for: .normal)
-            if habit.isAlreadyTakenToday == false {
-                HabitsStore.shared.track(habit)
+            if habit?.isAlreadyTakenToday == false {
+                HabitsStore.shared.track(habit!)
+            
             }
-        }
     }
+    
+        
     
     func setupViews() {
         print(#function)
