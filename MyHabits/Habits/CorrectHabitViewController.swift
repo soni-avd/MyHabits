@@ -8,8 +8,11 @@
 import UIKit
 
 class CorrectHabitViewController: UIViewController {
-
+    
     private var habitViewController: HabitViewController?
+    var habitDetail: HabitDetailsViewController?
+    var habitsViewController: HabitsViewController?
+    
     
     let scrollView = UIScrollView()
     public var habit: Habit
@@ -78,6 +81,7 @@ class CorrectHabitViewController: UIViewController {
         delete.translatesAutoresizingMaskIntoConstraints = false
         delete.setTitle("Удалить привычку", for: .normal)
         delete.setTitleColor(.red, for: .normal)
+        delete.addTarget(self, action: #selector(showAlert(_:)), for: .touchUpInside)
         return delete
     }()
     
@@ -120,7 +124,22 @@ class CorrectHabitViewController: UIViewController {
     @objc func cancelDatePicker(){
         self.view.endEditing(true)
     }
-    
+    @objc func showAlert(_ sender: Any) {
+        let alertController = UIAlertController(title: "Удалить привычку?", message: "Вы хотите удалить привычку \(habit.name)?", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Отмена", style: .default) { _ in
+            print("Отмена")
+        }
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { _ in
+            if let oldHabit = HabitsStore.shared.habits.firstIndex(where: ({ $0.name == self.habit.name })) {
+                HabitsStore.shared.habits.remove(at: oldHabit )
+            }
+            self.dismiss(animated: true, completion: nil)
+            self.habitDetail?.dismiss(animated: true, completion: nil)
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
     func setupViews() {
         print(#function)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -178,17 +197,15 @@ class CorrectHabitViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-   
+    
     
     @objc func colorButtonPressed() {
-    print(#function)
-    let picker = UIColorPickerViewController()
-    self.present(picker, animated: true, completion: nil)
-    picker.selectedColor = colorButton.backgroundColor!
-    picker.delegate = self
-}
-    
-    
+        print(#function)
+        let picker = UIColorPickerViewController()
+        self.present(picker, animated: true, completion: nil)
+        picker.selectedColor = colorButton.backgroundColor!
+        picker.delegate = self
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -208,23 +225,19 @@ class CorrectHabitViewController: UIViewController {
         textInput.textColor = habit.color
         colorButton.backgroundColor = habit.color
         
-
+        
     }
-
     @objc func saveBarButton() {
-    print(#function)
-        habitViewController?.onHabitAdded = {
-            
-        }
-
+        print(#function)
+        self.habitsViewController?.habitsCollectionView.reloadData()
         self.dismiss(animated: true, completion: nil)
-
+        
     }
-
+    
     @objc func cancelBarButton() {
-    print(#function)
-    self.dismiss(animated: true, completion: nil)
-
+        print(#function)
+        self.dismiss(animated: true, completion: nil)
+        
     }
 }
 

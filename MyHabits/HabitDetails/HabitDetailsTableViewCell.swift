@@ -9,14 +9,14 @@ import UIKit
 
 class HabitDetailsTableViewCell: UITableViewCell {
     
-    var dayDate: Habit? {
-        didSet {
-            trackedDay.text = HabitsStore.shared.trackDateString(forIndex: 1)
-            
-        }
-    }
+// public var dayDate: Habit? {
+//        didSet {
+//            let dateCount = HabitsStore.shared.dates.count
+//            trackedDay.text = HabitsStore.shared.trackDateString(forIndex: dateCount)
+//            
+//        }
+//    }
 
-    
     var trackedDay: UILabel = {
         var day = UILabel()
         day.translatesAutoresizingMaskIntoConstraints = false

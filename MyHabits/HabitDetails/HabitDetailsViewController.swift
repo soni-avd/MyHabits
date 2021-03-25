@@ -8,8 +8,8 @@
 import UIKit
 
 class HabitDetailsViewController: UIViewController {
-  
-
+    
+    
     private lazy var habitDetailsTableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .grouped)
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -19,12 +19,12 @@ class HabitDetailsViewController: UIViewController {
         tv.dataSource = self
         return tv
     }()
-     let habit: Habit
+    let habit: Habit
     
     init(habit: Habit) {
         self.habit = habit
         super.init(nibName: nil, bundle: nil)
-
+        
     }
     
     required init?(coder: NSCoder) {
@@ -52,9 +52,9 @@ class HabitDetailsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.navigationBar.prefersLargeTitles = false
-
+        
     }
-    }
+}
 extension HabitDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
@@ -68,9 +68,16 @@ extension HabitDetailsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: HabitDetailsTableViewCell = tableView.dequeueReusableCell(withIdentifier: String(describing: HabitDetailsTableViewCell.self)) as! HabitDetailsTableViewCell
-        cell.dayDate = HabitsStore.shared.habits[indexPath.item]
-        
+        cell.trackedDay.text = HabitsStore.shared.trackDateString(forIndex: HabitsStore.shared.dates.count - 1 - indexPath.item)
+
         return cell
+    }
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        if let oldIndex = tableView.indexPathForSelectedRow {
+            tableView.cellForRow(at: oldIndex)?.accessoryType = .none
+        }
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        return indexPath
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return HabitDetailsHeaderView()

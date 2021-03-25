@@ -17,7 +17,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
             habitLabel.textColor = habit?.color
             if habit?.isAlreadyTakenToday == true {
                 tick()
-                daysLabel.text = "Подряд: \(+1)"
+                daysLabel.text = "Подряд: \(HabitsStore.shared.habits.count)"
             } else {
                 daysLabel.text = "Подряд: 0"
             }
@@ -27,10 +27,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         var habit = UILabel()
         habit.translatesAutoresizingMaskIntoConstraints = false
         habit.numberOfLines = 0
-        for habit1 in HabitsStore.shared.habits {
-            habit.text = "\(habit1.name)"
-            habit.textColor = habit1.color
-        }
         habit.font = .boldSystemFont(ofSize: 15)
         return habit
     }()
@@ -38,9 +34,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         var time = UILabel()
         time.translatesAutoresizingMaskIntoConstraints = false
         time.textColor = .systemGray
-        for habit in HabitsStore.shared.habits {
-            time.text = "\(habit.dateString)"
-        }
         return time
     }()
     

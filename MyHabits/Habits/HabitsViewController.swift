@@ -41,7 +41,7 @@ class HabitsViewController: UIViewController {
     @objc func addNewHabit() {
         print(#function)
         
-//        habitViewController = HabitViewController()
+        habitViewController = HabitViewController()
         
         habitViewController?.onHabitAdded = { [weak self] in
             self?.habitsCollectionView.reloadData()

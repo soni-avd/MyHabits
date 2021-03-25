@@ -22,7 +22,7 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     private var indicatorLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "\(Float(HabitsStore.shared.todayProgress))%"
+        label.text = "\(Int(HabitsStore.shared.todayProgress))%"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 13)
         
