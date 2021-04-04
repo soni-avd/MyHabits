@@ -195,7 +195,7 @@ class HabitViewController: UIViewController {
         reloadInputViews()
         
         dismiss(animated: true) { [weak self] in
-            self?.onHabitAdded?()
+            self?.delegate?.didHabitAdd()
         }
     }
     @objc func cancelBarButton() {
