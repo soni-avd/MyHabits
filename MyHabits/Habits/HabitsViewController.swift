@@ -8,12 +8,10 @@
 import UIKit
 
 class HabitsViewController: UIViewController {
-    
-   
     private let layout = UICollectionViewFlowLayout()
     lazy var habitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    
     private var habitViewController: HabitViewController?
+    private var habitDetailsViewController: HabitDetailsViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,31 +34,26 @@ class HabitsViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-    
-
     @objc func addNewHabit() {
         print(#function)
         
         habitViewController = HabitViewController()
         
-        habitViewController?.onHabitAdded = { [weak self] in
-            self?.habitsCollectionView.reloadData()
-        }
-        
+        habitViewController?.delegate = self
         guard let viewController = habitViewController else { return }
-        
         self.present(viewController, animated: true, completion: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.navigationBar.prefersLargeTitles = true
-
     }
-    
 }
-
+extension HabitsViewController: HabitViewControllerDelegate {
+    func didHabitAdd() {
+        habitsCollectionView.reloadData()
+    }
+}
 extension HabitsViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
             let width: CGFloat = collectionView.bounds.width - 32
@@ -70,7 +63,6 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 130)
         }
     }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         if section == 0 {
             return UIEdgeInsets(top: 22, left: 16, bottom: 18, right: 16)
@@ -82,12 +74,14 @@ extension HabitsViewController: UICollectionViewDelegateFlowLayout {
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let habit = HabitsStore.shared.habits[indexPath.item]
-        let habitViewController = HabitDetailsViewController(habit: habit)
-        navigationController?.pushViewController(habitViewController, animated: true)
+        habitDetailsViewController = HabitDetailsViewController(habit: habit)
+        habitDetailsViewController?.onReloadData = { [weak self] in
+            self?.habitsCollectionView.reloadData()
+        }
+        guard let vc = habitDetailsViewController else { return }
+        navigationController?.pushViewController(vc, animated: true)
     }
-    
 }
-
 extension HabitsViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
@@ -96,7 +90,6 @@ extension HabitsViewController: UICollectionViewDataSource {
         guard section != 0 else { return 1 }
         return HabitsStore.shared.habits.count
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch indexPath.section {
         case 0:

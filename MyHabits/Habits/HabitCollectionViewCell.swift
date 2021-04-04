@@ -9,6 +9,8 @@ import UIKit
 
 class HabitCollectionViewCell: UICollectionViewCell {
     
+    var onReloadData: (() -> Void)?
+    
     var habit: Habit? {
         didSet {
             habitLabel.text = habit?.name
@@ -17,7 +19,7 @@ class HabitCollectionViewCell: UICollectionViewCell {
             habitLabel.textColor = habit?.color
             if habit?.isAlreadyTakenToday == true {
                 tick()
-                daysLabel.text = "Подряд: \(HabitsStore.shared.habits.count)"
+                daysLabel.text = "Подряд: \(habit!.trackDates.count)"
             } else {
                 daysLabel.text = "Подряд: 0"
             }
@@ -36,7 +38,6 @@ class HabitCollectionViewCell: UICollectionViewCell {
         time.textColor = .systemGray
         return time
     }()
-    
     private var daysLabel: UILabel = {
         var days = UILabel()
         days.translatesAutoresizingMaskIntoConstraints = false
@@ -55,19 +56,15 @@ class HabitCollectionViewCell: UICollectionViewCell {
     }()
     @objc func tick() {
         print(#function)
-    
-            tickButton.tintColor = habit?.color
+        tickButton.tintColor = habit?.color
         tickButton.backgroundColor = habit?.color
-            tickButton.setImage(.checkmark, for: .normal)
-            if habit?.isAlreadyTakenToday == false {
-                HabitsStore.shared.track(habit!)
-            
-            }
+        tickButton.setImage(.checkmark, for: .normal)
+        if habit?.isAlreadyTakenToday == false {
+            HabitsStore.shared.track(habit!)
+            onReloadData?()
+        }
     }
-    
-        
-    
-    func setupViews() {
+    private func setupViews() {
         print(#function)
         
         contentView.addSubview(habitLabel)

@@ -9,7 +9,8 @@ import UIKit
 
 class HabitDetailsViewController: UIViewController {
     
-    
+    var onReloadData: (() -> Void)?
+
     private lazy var habitDetailsTableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .grouped)
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -19,6 +20,8 @@ class HabitDetailsViewController: UIViewController {
         tv.dataSource = self
         return tv
     }()
+    private lazy var correctHabitVC = CorrectHabitViewController(habit: habit)
+
     let habit: Habit
     
     init(habit: Habit) {
@@ -45,13 +48,20 @@ class HabitDetailsViewController: UIViewController {
             habitDetailsTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
+        setupCorrectHabitCallbacks()
     }
     @objc func correctHabit() {
-        navigationController?.present(CorrectHabitViewController(habit: habit), animated: true, completion: nil)
+        navigationController?.present(correctHabitVC, animated: true, completion: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         navigationController?.navigationBar.prefersLargeTitles = false
+    }
+    private func setupCorrectHabitCallbacks() {
+        correctHabitVC.onReloadDataAfterDelete = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+            self?.onReloadData?()
+        }
         
     }
 }
@@ -63,13 +73,12 @@ extension HabitDetailsViewController: UITableViewDelegate {
 }
 extension HabitDetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return HabitsStore.shared.dates.count
+        return habit.trackDates.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: HabitDetailsTableViewCell = tableView.dequeueReusableCell(withIdentifier: String(describing: HabitDetailsTableViewCell.self)) as! HabitDetailsTableViewCell
         cell.trackedDay.text = HabitsStore.shared.trackDateString(forIndex: HabitsStore.shared.dates.count - 1 - indexPath.item)
-
         return cell
     }
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {

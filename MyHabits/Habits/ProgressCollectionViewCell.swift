@@ -9,7 +9,13 @@ import UIKit
 
 class ProgressCollectionViewCell: UICollectionViewCell {
     
-    
+    var progress: Float? {
+        didSet {
+            guard let progress = progress else { return }
+            indicatorLabel.text = "\(Int(progress * 100))%"
+            progressIndicator.setProgress(progress, animated: true)
+        }
+    }
     private let  indicatorText: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -22,13 +28,12 @@ class ProgressCollectionViewCell: UICollectionViewCell {
     private var indicatorLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "\(Int(HabitsStore.shared.todayProgress))%"
+        label.text = "\(Int(HabitsStore.shared.todayProgress * 100))%"
         label.textColor = .systemGray
         label.font = .systemFont(ofSize: 13)
-        
         return label
     }()
-    var progressIndicator: UIProgressView = {
+  private var progressIndicator: UIProgressView = {
         var progress = UIProgressView(progressViewStyle: .default)
         progress.translatesAutoresizingMaskIntoConstraints = false
         progress.trackTintColor = .systemGray

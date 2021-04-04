@@ -7,13 +7,17 @@
 
 import UIKit
 
+protocol HabitViewControllerDelegate: class {
+    func didHabitAdd()
+}
 class HabitViewController: UIViewController {
     
     var onHabitAdded: (() -> Void)?
     
     let scrollView = UIScrollView()
+    weak var delegate: HabitViewControllerDelegate?
     
-    let nameLabel: UILabel = {
+    private let nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "НАЗВАНИЕ"
@@ -23,7 +27,7 @@ class HabitViewController: UIViewController {
         return label
     }()
     
-    let textInput: UITextField = {
+    private let textInput: UITextField = {
         let input = UITextField()
         input.translatesAutoresizingMaskIntoConstraints = false
         input.placeholder = "Бегать по утрам, спать 8 часов и т.п."
@@ -33,7 +37,7 @@ class HabitViewController: UIViewController {
         return input
     }()
     
-    let colorLabel: UILabel = {
+    private let colorLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "ЦВЕТ"
@@ -42,7 +46,7 @@ class HabitViewController: UIViewController {
         return label
     }()
     
-    let colorButton: UIButton = {
+    private let colorButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = #colorLiteral(red: 1, green: 0.6235294342, blue: 0.3098039329, alpha: 1)
@@ -51,7 +55,7 @@ class HabitViewController: UIViewController {
         button.layer.masksToBounds = true
         return button
     }()
-    let timeLabel: UILabel = {
+    private let timeLabel: UILabel = {
         let time = UILabel()
         time.translatesAutoresizingMaskIntoConstraints = false
         time.text = "ВРЕМЯ"
@@ -60,7 +64,7 @@ class HabitViewController: UIViewController {
         return time
     }()
     
-    let dateText: UILabel = {
+    private let dateText: UILabel = {
         let date = UILabel()
         date.text =   "Каждый день в "
         date.translatesAutoresizingMaskIntoConstraints = false
@@ -72,6 +76,8 @@ class HabitViewController: UIViewController {
         let txtdata = UITextField()
         txtdata.translatesAutoresizingMaskIntoConstraints = false
         txtdata.textColor = .black
+        txtdata.placeholder = "00:00"
+        
         return txtdata
     }()
     let datePicker = UIDatePicker()
@@ -85,7 +91,7 @@ class HabitViewController: UIViewController {
         toolbar.sizeToFit()
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         
-        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donedatePicker))
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(doDatePicker))
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(cancelDatePicker))
         toolbar.setItems([doneButton,spaceButton,cancelButton], animated: false)
@@ -94,7 +100,7 @@ class HabitViewController: UIViewController {
         txtDatePicker.inputView = datePicker
     }
     
-    @objc func donedatePicker(){
+    @objc func doDatePicker(){
         
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -176,7 +182,7 @@ class HabitViewController: UIViewController {
         let cancelItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(cancelBarButton))
         navItem.leftBarButtonItem = cancelItem
         navBar.setItems([navItem], animated: false)
-
+        
     }
     
     @objc func saveBarButton() {
@@ -192,20 +198,17 @@ class HabitViewController: UIViewController {
             self?.onHabitAdded?()
         }
     }
-    
     @objc func cancelBarButton() {
         print(#function)
         self.dismiss(animated: true, completion: nil)
-
     }
-        @objc func colorButtonPressed() {
+    @objc func colorButtonPressed() {
         print(#function)
         let picker = UIColorPickerViewController()
         self.present(picker, animated: true, completion: nil)
         picker.selectedColor = colorButton.backgroundColor!
         picker.delegate = self
     }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -220,7 +223,7 @@ class HabitViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-        @objc fileprivate func keyboardWillShow(notification: NSNotification) {
+    @objc fileprivate func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             scrollView.contentInset.bottom = keyboardSize.height
             scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)

@@ -9,6 +9,8 @@ import UIKit
 
 class CorrectHabitViewController: UIViewController {
     
+    var onReloadDataAfterDelete: (() -> Void)?
+
     private var habitViewController: HabitViewController?
     var habitDetail: HabitDetailsViewController?
     var habitsViewController: HabitsViewController?
@@ -72,6 +74,7 @@ class CorrectHabitViewController: UIViewController {
         let txtdata = UITextField()
         txtdata.translatesAutoresizingMaskIntoConstraints = false
         txtdata.textColor = .black
+        txtdata.placeholder = "00:00"
         return txtdata
     }()
     let datePicker = UIDatePicker()
@@ -103,7 +106,7 @@ class CorrectHabitViewController: UIViewController {
         toolbar.sizeToFit()
         toolbar.translatesAutoresizingMaskIntoConstraints = false
         
-        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(donedatePicker))
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(doDatePicker))
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         let cancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(cancelDatePicker))
         toolbar.setItems([doneButton,spaceButton,cancelButton], animated: false)
@@ -112,8 +115,7 @@ class CorrectHabitViewController: UIViewController {
         txtDatePicker.inputView = datePicker
     }
     
-    @objc func donedatePicker(){
-        
+    @objc func doDatePicker(){
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         formatter.locale = Locale(identifier: "ru_RU")
@@ -133,8 +135,9 @@ class CorrectHabitViewController: UIViewController {
             if let oldHabit = HabitsStore.shared.habits.firstIndex(where: ({ $0.name == self.habit.name })) {
                 HabitsStore.shared.habits.remove(at: oldHabit )
             }
-            self.dismiss(animated: true, completion: nil)
-            self.habitDetail?.dismiss(animated: true, completion: nil)
+            self.dismiss(animated: true) { [weak self] in
+                self?.onReloadDataAfterDelete?()
+            }
         }
         alertController.addAction(cancelAction)
         alertController.addAction(deleteAction)
@@ -218,29 +221,29 @@ class CorrectHabitViewController: UIViewController {
         let cancelItem = UIBarButtonItem(title: "Отменить", style: .plain, target: self, action: #selector(cancelBarButton))
         navItem.leftBarButtonItem = cancelItem
         navBar.setItems([navItem], animated: false)
-        
         setupViews()
         showDatePicker()
         textInput.text = habit.name
         textInput.textColor = habit.color
         colorButton.backgroundColor = habit.color
-        
-        
     }
     @objc func saveBarButton() {
-        print(#function)
-        self.habitsViewController?.habitsCollectionView.reloadData()
-        self.dismiss(animated: true, completion: nil)
-        
+        let newHabit = Habit(name: textInput.text!,
+                             date: datePicker.date,
+                             color: colorButton.backgroundColor!)
+        reloadInputViews()
+        if let index = HabitsStore.shared.habits.firstIndex(where: { $0 == self.habit }) {
+            HabitsStore.shared.habits[index] = newHabit
+        }
+        dismiss(animated: true) { [weak self] in
+            self?.onReloadDataAfterDelete?()
+        }
     }
-    
     @objc func cancelBarButton() {
         print(#function)
         self.dismiss(animated: true, completion: nil)
-        
     }
 }
-
 extension CorrectHabitViewController: UIColorPickerViewControllerDelegate {
     func colorPickerViewControllerDidSelectColor(_ viewController: UIColorPickerViewController) {
         colorButton.backgroundColor = viewController.selectedColor
